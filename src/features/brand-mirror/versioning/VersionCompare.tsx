@@ -1,5 +1,6 @@
 import { cloneTokens } from '../domain/brandRules'
 import type { BrandMirrorSnapshot } from '../models/brandMirrorModels'
+import { RADIUS_ROLES, SPACING_ROLES, TYPE_ROLES, previewStyleVars, RADIUS_STEP, SPACING_STEP, TYPE_STEP } from '../tokens/previewTokens'
 
 export function VersionCompare({ snapshot, onSave, onToggle, onExport }: { snapshot: BrandMirrorSnapshot; onSave: () => void; onToggle: () => void; onExport: () => void }) {
   const versions = snapshot.versions.slice(-2)
@@ -9,5 +10,5 @@ export function VersionCompare({ snapshot, onSave, onToggle, onExport }: { snaps
 
 function VersionCard({ label, tokens, active }: { label: string; tokens: BrandMirrorSnapshot['tokens']; active: boolean }) {
   const preview = cloneTokens(tokens)
-  return <div className={`version-card ${active ? 'active' : ''}`}><div className="version-card-head"><span>{label}</span><small>{active ? '当前版本' : '历史版本'}</small></div><div className="version-preview" style={{ background: preview.secondary, borderRadius: preview.radiusScale[2] }}><div className="version-preview-top" style={{ background: preview.primary }} /><div className="version-preview-copy"><i /><i /><i /></div><span className="version-preview-button" style={{ background: preview.primary, borderRadius: preview.radiusScale[0] }} /></div><div className="version-swatch-row"><span style={{ background: preview.primary }} /><span style={{ background: preview.secondary }} /><span>圆角 {preview.radiusScale[1]}px</span><span>字号 {preview.typeScale[2]}px</span></div></div>
+  return <div className={`version-card ${active ? 'active' : ''}`} style={previewStyleVars(preview)}><div className="version-card-head"><span>{label}</span><small>{active ? '当前版本' : '历史版本'}</small></div><div className="version-preview" style={{ background: preview.secondary, borderRadius: preview.radiusScale[RADIUS_STEP.panel] }}><div className="version-preview-top" style={{ background: preview.primary }} /><div className="version-preview-copy"><i /><i /><i /></div><span className="version-preview-button" style={{ background: preview.primary, borderRadius: preview.radiusScale[RADIUS_STEP.control] }} /></div><div className="version-swatch-row"><span style={{ background: preview.primary }} /><span style={{ background: preview.secondary }} /><span>{RADIUS_ROLES[RADIUS_STEP.button].short} {preview.radiusScale[RADIUS_STEP.button]}px</span><span>{SPACING_ROLES[SPACING_STEP.section].short} {preview.spacingScale[SPACING_STEP.section]}px</span><span>{TYPE_ROLES[TYPE_STEP.body].short} {preview.typeScale[TYPE_STEP.body]}px</span></div></div>
 }

@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import type { BrandTokens } from '../models/brandMirrorModels'
+import { RADIUS_ROLES, SPACING_ROLES, TYPE_ROLES } from '../tokens/previewTokens'
 
 type TokenCategory = 'all' | 'color' | 'radius' | 'spacing' | 'type'
 type TokenEntry = { key: string; label: string; category: Exclude<TokenCategory, 'all'>; value: string }
@@ -18,9 +19,9 @@ export function TokenExplorer({ tokens }: { tokens: BrandTokens }) {
   const entries = useMemo<TokenEntry[]>(() => [
     { key: 'color.primary', label: '主色', category: 'color', value: tokens.primary },
     { key: 'color.secondary', label: '辅助色', category: 'color', value: tokens.secondary },
-    ...tokens.radiusScale.map((value, index) => ({ key: `radius.${index + 1}`, label: `圆角 ${index + 1}`, category: 'radius' as const, value: `${value}px` })),
-    ...tokens.spacingScale.map((value, index) => ({ key: `spacing.${index + 1}`, label: `间距 ${index + 1}`, category: 'spacing' as const, value: `${value}px` })),
-    ...tokens.typeScale.map((value, index) => ({ key: `type.${index + 1}`, label: `字体 ${index + 1}`, category: 'type' as const, value: `${value}px` })),
+    ...tokens.radiusScale.map((value, index) => ({ key: `radius.${index + 1}`, label: `圆角 · ${RADIUS_ROLES[index].short}`, category: 'radius' as const, value: `${value}px` })),
+    ...tokens.spacingScale.map((value, index) => ({ key: `spacing.${index + 1}`, label: `间距 · ${SPACING_ROLES[index].short}`, category: 'spacing' as const, value: `${value}px` })),
+    ...tokens.typeScale.map((value, index) => ({ key: `type.${index + 1}`, label: `字体 · ${TYPE_ROLES[index].short}`, category: 'type' as const, value: `${value}px` })),
   ], [tokens])
   const normalizedQuery = query.trim().toLowerCase()
   const visibleEntries = entries.filter((entry) => {
