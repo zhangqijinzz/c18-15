@@ -1,5 +1,6 @@
 import { cloneTokens } from '../domain/brandRules'
 import type { BrandMirrorSnapshot } from '../models/brandMirrorModels'
+import { px, resolveTokens } from '../tokens/semanticTokens'
 
 export function VersionCompare({ snapshot, onSave, onToggle, onExport }: { snapshot: BrandMirrorSnapshot; onSave: () => void; onToggle: () => void; onExport: () => void }) {
   const versions = snapshot.versions.slice(-2)
@@ -8,6 +9,6 @@ export function VersionCompare({ snapshot, onSave, onToggle, onExport }: { snaps
 }
 
 function VersionCard({ label, tokens, active }: { label: string; tokens: BrandMirrorSnapshot['tokens']; active: boolean }) {
-  const preview = cloneTokens(tokens)
-  return <div className={`version-card ${active ? 'active' : ''}`}><div className="version-card-head"><span>{label}</span><small>{active ? '当前版本' : '历史版本'}</small></div><div className="version-preview" style={{ background: preview.secondary, borderRadius: preview.radiusScale[2] }}><div className="version-preview-top" style={{ background: preview.primary }} /><div className="version-preview-copy"><i /><i /><i /></div><span className="version-preview-button" style={{ background: preview.primary, borderRadius: preview.radiusScale[0] }} /></div><div className="version-swatch-row"><span style={{ background: preview.primary }} /><span style={{ background: preview.secondary }} /><span>圆角 {preview.radiusScale[1]}px</span><span>字号 {preview.typeScale[2]}px</span></div></div>
+  const preview = resolveTokens(cloneTokens(tokens))
+  return <div className={`version-card ${active ? 'active' : ''}`} style={{ padding: px(preview.spacing.group), borderRadius: px(preview.radius.card) }}><div className="version-card-head"><span>{label}</span><small>{active ? '当前版本' : '历史版本'}</small></div><div className="version-preview" style={{ background: preview.secondary, borderRadius: px(preview.radius.container), padding: px(preview.spacing.element) }}><div className="version-preview-top" style={{ background: preview.primary, borderRadius: px(preview.radius.control) }} /><div className="version-preview-copy" style={{ marginTop: px(preview.spacing.control), gap: px(preview.spacing.tight) }}><strong style={{ fontSize: px(preview.type.body) }}>品牌标题文字</strong><b style={{ fontSize: px(preview.type.bodySmall) }}>正文样例 / Body sample</b><em style={{ fontSize: px(preview.type.caption) }}>辅助标注文字</em></div><span className="version-preview-button" style={{ background: preview.primary, borderRadius: px(preview.radius.control), marginTop: px(preview.spacing.control), padding: `${px(preview.spacing.tight)} ${px(preview.spacing.element)}`, fontSize: px(preview.type.bodySmall) }}>操作 ↗</span></div><div className="version-swatch-row" style={{ marginTop: px(preview.spacing.control), fontSize: px(preview.type.caption) }}><span className="version-swatch-color" style={{ background: preview.primary }} /><span className="version-swatch-color" style={{ background: preview.secondary }} /><span>圆角 2 · {tokens.radiusScale[1]}px</span><span>间距 3 · {tokens.spacingScale[2]}px</span><span>字体 3 · {tokens.typeScale[2]}px</span></div></div>
 }

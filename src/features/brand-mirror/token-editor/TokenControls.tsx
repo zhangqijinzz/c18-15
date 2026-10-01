@@ -1,4 +1,5 @@
 import type { BrandMirrorSnapshot, BrandTheme } from '../models/brandMirrorModels'
+import { SCALE_LEVELS, type ScaleField } from '../tokens/semanticTokens'
 
 interface TokenControlsProps {
   snapshot: BrandMirrorSnapshot
@@ -50,9 +51,9 @@ export function TokenControls({ snapshot, onThemeChange, onColorChange, onScaleC
         </div>
       </section>
 
-      <ScaleControl label="圆角尺度" hint="px" values={snapshot.tokens.radiusScale} field="radiusScale" onChange={onScaleChange} />
-      <ScaleControl label="间距体系" hint="px" values={snapshot.tokens.spacingScale} field="spacingScale" onChange={onScaleChange} />
-      <ScaleControl label="字体比例" hint="px" values={snapshot.tokens.typeScale} field="typeScale" onChange={onScaleChange} />
+      <ScaleControl label="圆角尺度" hint="px · 4 档" values={snapshot.tokens.radiusScale} field="radiusScale" onChange={onScaleChange} />
+      <ScaleControl label="间距体系" hint="px · 5 档" values={snapshot.tokens.spacingScale} field="spacingScale" onChange={onScaleChange} />
+      <ScaleControl label="字体比例" hint="px · 6 档" values={snapshot.tokens.typeScale} field="typeScale" onChange={onScaleChange} />
 
       <div className="panel-footer"><span className="live-dot" />所有调整实时同步到预览</div>
     </aside>
@@ -63,6 +64,10 @@ function ColorField({ label, value, onChange }: { label: string; value: string; 
   return <label className="color-field"><span>{label}</span><div className="color-input"><input aria-label={label} type="color" value={value} onChange={(event) => onChange(event.target.value)} /><input aria-label={`${label} HEX`} value={value} onChange={(event) => onChange(event.target.value)} /></div></label>
 }
 
-function ScaleControl({ label, hint, values, field, onChange }: { label: string; hint: string; values: number[]; field: 'radiusScale' | 'spacingScale' | 'typeScale'; onChange: (field: 'radiusScale' | 'spacingScale' | 'typeScale', index: number, value: number) => void }) {
-  return <section className="control-section scale-section"><div className="section-label"><span>{label}</span><span className="muted">{hint}</span></div><div className="scale-inputs">{values.map((value, index) => <label key={`${field}-${index}`}><span>{index + 1}</span><input aria-label={`${label}${index + 1}`} type="number" min={field === 'typeScale' ? 10 : 0} max={field === 'typeScale' ? 72 : field === 'spacingScale' ? 64 : 40} value={value} onChange={(event) => onChange(field, index, Number(event.target.value))} /></label>)}</div></section>
+function ScaleControl({ label, hint, values, field, onChange }: { label: string; hint: string; values: number[]; field: ScaleField; onChange: (field: ScaleField, index: number, value: number) => void }) {
+  const levels = SCALE_LEVELS[field]
+  return <section className="control-section scale-section"><div className="section-label"><span>{label}</span><span className="muted">{hint}</span></div><div className="scale-inputs" style={{ gridTemplateColumns: `repeat(${values.length}, 1fr)` }}>{values.map((value, index) => {
+    const level = levels[index]
+    return <label key={`${field}-${index}`} title={`第 ${index + 1} 档 · ${level.name}：${level.usedFor}`}><span className="scale-index">{index + 1}</span><input aria-label={`${label}${index + 1}`} aria-describedby={`${field}-${index}-name`} type="number" min={field === 'typeScale' ? 10 : 0} max={field === 'typeScale' ? 72 : field === 'spacingScale' ? 64 : 40} value={value} onChange={(event) => onChange(field, index, Number(event.target.value))} /><small className="scale-level-name" id={`${field}-${index}-name`}>{level.name}</small></label>
+  })}</div></section>
 }
